@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Create Challan</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body { font-family:Poppins; background:#0b1120; color:white; margin:0; }
+.main { margin-left:240px; padding:30px; }
+
+select, input, textarea {
+    padding:8px;
+    margin:5px;
+    border-radius:6px;
+    border:none;
+    background-color: #1f2937;
+    color:#0f9954;
+    font-weight: bold;
+}
+
+.row { 
+    margin-bottom: 10px; 
+    position: relative; /* Add this */
+    display: flex; 
+    align-items: center; 
+}
+
+button {
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+}
+
+.add { background:#22c55e; }
+.remove { background:#ef4444; }
+.submit { background:#3b82f6; margin-top:20px; }
+
+.dropdown {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #1f2937;
+    position: absolute;
+    width: 250px;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 6px;
+}
+
+.dropdown li {
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.dropdown li:hover {
+    background: #374151;
+}
+</style>
+</head>
+
+<body>
+
+<%- include("partials/sidebar") %>
+
+<div class="main">
+
+<h2>➕ Create Challan</h2>
+
+<form method="POST" action="/create">
+
+<!-- Counter -->
+<label>Counter</label>
+
+<input type="text" id="counterSearch" placeholder="Search Counter..." autocomplete="off" required>
+<input type="hidden" name="counterId" id="counterId" required>
+
+<ul id="counterList" class="dropdown"></ul>
+
+<h3>Items</h3>
+
+<div id="items">
+
+<div class="row">
+    <input type="text" class="itemSearch" placeholder="Search Item..." oninput="searchItem(this)" required>
+    <input type="hidden" name="itemName[]" class="itemName">
+
+    <input type="number" name="quantity[]" placeholder="Qty" required>
+    <input type="number" name="price[]" class="price" placeholder="Price">
+
+    <!--<input name="quantity[]" type="number" placeholder="Qty" required>
+    <input name="price[]" type="number" placeholder="Price" required>!-->
+
+    <button type="button" class="remove" onclick="removeRow(this)">X</button>
+</div>
+
+</div>
+
+<button type="button" class="add" onclick="addRow()">+ Add Item</button>
+
+<!-- 🔥 Remarks -->
+<h3>Remarks</h3>
+<textarea name="remarks" rows="3" placeholder="Enter remarks (optional)" style="width:100%;"></textarea>
+
+<br>
+<button class="submit">Create Challan</button>
+
+</form>
+
+</div>
+
+<script>
+function setPrice(select) {
+    const price = select.options[select.selectedIndex].getAttribute("data-price");
+    const row = select.parentElement;
+    row.querySelector('input[name="price[]"]').value = price || "";
+}
+
+function addRow() {
+    const container = document.getElementById("items");
+    // Get the first row to use as a template
+    const firstRow = container.querySelector(".row");
+    const newRow = firstRow.cloneNode(true);
+
+    // Clear all inputs in the new row
+    newRow.querySelectorAll("input").forEach(input => {
+        input.value = "";
+    });
+
+    // Remove any existing dropdown lists that might have been cloned
+    const oldDropdown = newRow.querySelector(".dropdown");
+    if (oldDropdown) oldDropdown.remove();
+
+    container.appendChild(newRow);
+}
+
+function removeRow(btn) {
+    const container = document.getElementById("items");
+    const rows = container.getElementsByClassName("row");
+    
+    // Only remove if there is more than one row left
+    if (rows.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert("You must have at least one item.");
+    }
+}
+</script>
+
+<script>
+const counters = <%- JSON.stringify(counters) %>;
+const items = <%- JSON.stringify(items) %>;
+
+
+// 🔎 COUNTER SEARCH
+const counterInput = document.getElementById("counterSearch");
+const counterList = document.getElementById("counterList");
+
+counterInput.addEventListener("input", function () {
+    let value = this.value.toLowerCase();
+    counterList.innerHTML = "";
+
+    counters.forEach(c => {
+        if (c.name.toLowerCase().includes(value)) {
+            let li = document.createElement("li");
+            li.textContent = c.name;
+
+            li.onclick = () => {
+                counterInput.value = c.name;
+                document.getElementById("counterId").value = c._id;
+                counterList.innerHTML = "";
+            };
+
+            counterList.appendChild(li);
+        }
+    });
+});
+
+
+// 🔎 ITEM SEARCH
+function searchItem(input) {
+    let value = input.value.toLowerCase();
+    let dropdown = document.createElement("ul");
+    dropdown.className = "dropdown";
+
+    dropdown.innerHTML = "";
+
+    items.forEach(i => {
+        if (i.name.toLowerCase().includes(value)) {
+            let li = document.createElement("li");
+            li.textContent = i.name;
+
+            li.onclick = () => {
+                input.value = i.name;
+
+                let parent = input.closest("div");
+                parent.querySelector(".itemName").value = i.name;
+                parent.querySelector(".price").value = i.price;
+
+                dropdown.remove();
+            };
+
+            dropdown.appendChild(li);
+        }
+    });
+
+    // remove old dropdown
+    let old = input.parentNode.querySelector(".dropdown");
+    if (old) old.remove();
+
+    input.parentNode.appendChild(dropdown);
+}
+</script>
+
+</body>
+</html>

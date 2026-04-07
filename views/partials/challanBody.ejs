@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Challan</title>
+
+<style>
+body {
+    font-family: Arial;
+    padding: 30px;
+    background-color: white;
+    font-size: 14px;
+}
+
+/* 🔷 Company Header (CENTER) */
+.header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 15px;
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 5px;
+}
+
+/* 🔷 Info Left */
+.info {
+    margin-top: 20px;
+}
+
+.info p {
+    margin: 5px 0;
+}
+
+/* 🔷 Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #c59494;
+}
+
+/* 🔷 Total */
+.total {
+    text-align: right;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+/* 🔷 Remarks */
+.remarks {
+    margin-top: 5px;
+    border: #000 1px solid;
+    padding: 10px;
+}
+
+/* 🔷 Signature */
+.signature {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sign-box {
+    text-align: center;
+    width: 40%;
+}
+
+.print-btn {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.print-btn button {
+    background: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.print-btn button:hover {
+    background: #16a34a;
+}
+
+@media print {
+    /* Existing rules... */
+    .print-btn {
+        display: none;
+    }
+
+    body {
+        padding: 10px;
+        /* 💡 ADD THESE TWO LINES */
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact;
+    }
+    .receipt {
+        page-break-after: always;
+    }
+
+    .receipt:last-child {
+        page-break-after: auto;
+    }
+}
+
+.receipt {
+    margin-bottom: 40px;
+}
+
+/* Label */
+.copy-label {
+    text-align: right;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<!-- 🔷 CENTER HEADER -->
+<div class="header">
+    <img src="<%= company.logo %>" class="logo">
+    <h2><%= company.name %></h2>
+    <p><%= company.address %></p>
+    <p>📞 <%= company.phone %> | 📧 <%= company.email %></p>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+  <h3>Challan: <%= challan.challanNumber %></h3>
+  <h3>Date:<%= new Date(challan.date).toLocaleDateString() %></h3>
+</div>
+</div>
+
+<!-- 🔷 LEFT INFO -->
+<div class="info">
+    Challan For:
+    <p style="font-size: larger;"><strong><%= challan.counterName %></strong></p>
+    <p><strong><%= challan.counterAddress %></strong> </p>
+    <p><strong><%= challan.counterPhone %></strong></p>
+</div>
+
+<!-- 🔷 TABLE WITH SERIAL -->
+<table>
+<tr>
+    <th>Sl No</th>
+    <th>Item</th>
+    <th>Qty</th>
+    <th>Price</th>
+    <th>Total</th>
+</tr>
+
+<% challan.items.forEach((i, index) => { %>
+<tr>
+    <td><strong><%= index + 1 %></strong></td>
+    <td><strong><%= i.name %></strong></td>
+    <td><strong><%= i.quantity %></strong></td>
+    <td><strong>₹ <%= i.price %></strong></td>
+    <td><strong>₹ <%= i.quantity * i.price %></strong></td>
+</tr>
+<% }) %>
+
+</table>
+
+<!-- 🔷 TOTAL -->
+<div class="total">
+    <table style="font-size: smaller;">
+        <tr>
+            <td>
+                <strong>Total Qty: 
+                    <%= challan.items.reduce((sum, i) => sum + i.quantity, 0) %>
+                </strong>
+            </td>
+            <td>
+                <strong>Total Amount: ₹ <%= challan.totalAmount %></strong>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- 🔷 REMARKS -->
+<% if (challan.remarks) { %>
+<div class="remarks">
+    <strong>Remarks:</strong>
+    <%= challan.remarks %>
+</div>
+<% } %>
+
+<!-- 🔷 SIGNATURE -->
+<div class="signature">
+
+    <div class="sign-box">
+        <p>______________________</p>
+        <p><strong>Receiver Signature</strong></p>
+    </div>
+
+    <div class="sign-box">
+        <p>______________________</p>
+        <p><strong>Authorized Signatory</strong></p>
+        <p>FOR NEMESYS INFOTECH PVT. LTD.</p>
+    </div>
+    <div class="print-btn">
+        <button onclick="printChallan()">🖨 Print</button>
+    </div>
+</div>
+<!--2nd Part-->
+
+<script>
+    function printChallan() {
+    window.print();
+}
+</script>
+</body>
+</html>

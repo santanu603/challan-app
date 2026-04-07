@@ -1,0 +1,104 @@
+<div class="sidebar">
+
+    <!-- Logo -->
+    <h2 class="logo">⚡ ChallanPro</h2>
+
+    <!-- User Section -->
+    <div class="user-box">
+        <div class="user-header">
+            <div>
+                <p>Welcome 👋</p>
+                <h4><%= username ? username : "Guest" %></h4>
+            </div>
+
+            <a href="/logout" class="logout-btn">Log Out</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/">📊 Dashboard</a>
+        <a href="/new">➕ Create Challan</a>
+        <a href="/add-item">📦 Add Item</a>
+        <a href="/add-counter">🏢 Add Counter</a>
+        <a href="/counters">📋 Counters</a>
+        <a href="/items">📦 Items</a>
+    </nav>
+
+</div>
+
+<style>
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+}
+
+/* Logo */
+.logo {
+    color: #22c55e;
+    margin-bottom: 20px;
+}
+
+/* User Box */
+.user-box {
+    background: #1f2937;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Header inside user box */
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Text */
+.user-box p {
+    margin: 0;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.user-box h4 {
+    margin: 4px 0 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Logout Button */
+.logout-btn {
+    background: #ef4444;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.logout-btn:hover {
+    background: #dc2626;
+}
+
+/* Navigation */
+nav a {
+    display: block;
+    color: #cbd5f5;
+    text-decoration: none;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+nav a:hover {
+    background: #1f2937;
+}
+</style>

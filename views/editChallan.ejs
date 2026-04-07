@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Challan</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: Poppins;
+    background: #0b1120;
+    color: white;
+    margin: 0;
+    padding-left: 16px;
+    border: #0f9954 4px solid;
+    border-radius: 15px;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+input, textarea {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 6px;
+    border: none;
+    background-color: #1f2937;
+    color:#0f9954;
+    font-weight: bold;
+}
+
+/* 🔷 Row */
+.item-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* 🔷 Buttons */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.add { background: #22c55e; }
+.remove { background: #ef4444; }
+.update { background: #3b82f6; margin-top: 20px; }
+
+/* 🔷 Dropdown */
+.dropdown {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #1f2937;
+    position: absolute;
+    width: 200px;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 6px;
+    z-index: 100;
+}
+
+.dropdown li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown li:hover {
+    background: #374151;
+}
+</style>
+
+</head>
+
+<body>
+
+<%- include("partials/sidebar") %>
+
+<div class="main">
+
+<h2>✏️ Edit Challan</h2>
+
+<form method="POST" action="/update/<%= challan._id %>">
+
+<!-- 🔎 COUNTER -->
+<label>Counter:</label>
+
+<h2 style="color: #3b82f6;" id="counterSearch" autocomplete="off"><%= challan.counterName %></h2>
+<!--<input type="hidden" name="counterName" id="counterName" value="<%= challan.counterName %>"-->
+
+<!--<ul id="counterList" class="dropdown"></ul> -->
+
+
+<!-- 🔎 ITEMS -->
+<h3>Items</h3>
+
+<div id="itemsContainer">
+
+<% challan.items.forEach(item => { %>
+<div class="item-row">
+
+    <input type="text" class="itemSearch" value="<%= item.name %>" oninput="searchItem(this)"required="true">
+    <input type="hidden" name="itemName[]" class="itemName" value="<%= item.name %>"required="true">
+
+    <input type="number" name="quantity[]" value="<%= item.quantity %>"required="true">
+    <input type="number" name="price[]" class="price" value="<%= item.price %>"required="true">
+
+    <button type="button" class="remove" onclick="removeRow(this)">X</button>
+
+</div>
+<% }) %>
+
+</div>
+
+<button type="button" class="add" onclick="addRow()">+ Add Item</button>
+
+<!-- REMARKS -->
+<h3>Remarks</h3>
+<textarea name="remarks"><%= challan.remarks %></textarea>
+
+<br>
+<button type="submit" class="update">Update</button>
+
+</form>
+
+</div>
+
+<script>
+const counters = <%- JSON.stringify(counters) %>;
+const items = <%- JSON.stringify(items) %>;
+
+
+// 🔎 COUNTER SEARCH
+const counterInput = document.getElementById("counterSearch");
+const counterList = document.getElementById("counterList");
+
+counterInput.addEventListener("input", function () {
+    let value = this.value.toLowerCase();
+    counterList.innerHTML = "";
+
+    counters.forEach(c => {
+        if (c.name.toLowerCase().includes(value)) {
+            let li = document.createElement("li");
+            li.textContent = c.name;
+
+            li.onclick = () => {
+                counterInput.value = c.name;
+                document.getElementById("counterName").value = c.name;
+                counterList.innerHTML = "";
+            };
+
+            counterList.appendChild(li);
+        }
+    });
+});
+
+
+// 🔎 ITEM SEARCH
+function searchItem(input) {
+    let value = input.value.toLowerCase();
+
+    let dropdown = document.createElement("ul");
+    dropdown.className = "dropdown";
+
+    items.forEach(i => {
+        if (i.name.toLowerCase().includes(value)) {
+            let li = document.createElement("li");
+            li.textContent = i.name;
+
+            li.onclick = () => {
+                input.value = i.name;
+
+                let row = input.parentNode;
+                row.querySelector(".itemName").value = i.name;
+                row.querySelector(".price").value = i.price;
+
+                dropdown.remove();
+            };
+
+            dropdown.appendChild(li);
+        }
+    });
+
+    let old = input.parentNode.querySelector(".dropdown");
+    if (old) old.remove();
+
+    input.parentNode.appendChild(dropdown);
+}
+
+
+// ➕ ADD ROW (FIXED 🔥)
+function addRow() {
+    const container = document.getElementById("itemsContainer");
+
+    const div = document.createElement("div");
+    div.className = "item-row";
+
+    div.innerHTML = `
+        <input type="text" class="itemSearch" placeholder="Search Item..." oninput="searchItem(this)">
+        <input type="hidden" name="itemName[]" class="itemName">
+
+        <input type="number" name="quantity[]" placeholder="Qty">
+        <input type="number" name="price[]" class="price" placeholder="Price">
+
+        <button type="button" class="remove" onclick="removeRow(this)">X</button>
+    `;
+
+    container.appendChild(div);
+}
+
+
+// ❌ REMOVE ROW (FIXED)
+function removeRow(btn) {
+    const rows = document.querySelectorAll(".item-row");
+
+    if (rows.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert("At least one item required");
+    }
+}
+</script>
+
+</body>
+</html>
