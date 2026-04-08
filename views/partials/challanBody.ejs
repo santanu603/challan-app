@@ -204,7 +204,7 @@ td:nth-child(2) {
         <div class="box">
             <h4>Challan Details</h4>
             <p><strong>No:</strong> <%= challan.challanNumber %></p>
-            <p><strong>Date:</strong> <%= new Date(challan.date).toLocaleDateString() %></p>
+            <p><strong>Date:</strong> <%= new Date(challan.date).toLocaleDateString('en-GB') %></p>
 
             <svg id="barcode"></svg>
         </div>
