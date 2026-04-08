@@ -239,8 +239,20 @@ router.post("/update/:id", async (req, res) => {
 // 📋 View Counters
 router.get("/counters", async (req, res) => {
     try {
-        const counters = await Counter.find().sort({ createdAt: -1 });
-        res.render("counters", { counters });
+        const search = req.query.search || "";
+
+        const query = {
+            $or: [
+                { name: { $regex: search, $options: "i" } },
+                { address: { $regex: search, $options: "i" } },
+                { phone: { $regex: search, $options: "i" } }
+            ]
+        };
+
+        const counters = await Counter.find(query).sort({ createdAt: -1 });
+
+        res.render("counters", { counters, search });
+
     } catch (err) {
         console.error(err);
         res.send("Error loading counters");
@@ -251,8 +263,31 @@ router.get("/counters", async (req, res) => {
 // 📋 View Items
 router.get("/items", async (req, res) => {
     try {
-        const items = await Item.find().sort({ createdAt: -1 });
-        res.render("items", { items });
+        const search = req.query.search || "";
+
+        let query = {};
+
+        if (search) {
+            // If search is a number → match price
+            if (!isNaN(search)) {
+                query = {
+                    $or: [
+                        { name: { $regex: search, $options: "i" } },
+                        { price: Number(search) } // ✅ correct way
+                    ]
+                };
+            } else {
+                // If text → search only name
+                query = {
+                    name: { $regex: search, $options: "i" }
+                };
+            }
+        }
+
+        const items = await Item.find(query).sort({ createdAt: -1 });
+
+        res.render("items", { items, search });
+
     } catch (err) {
         console.error(err);
         res.send("Error loading items");

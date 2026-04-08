@@ -6,8 +6,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
 <style>
-body { font-family:Poppins; background:#0b1120; color:white; margin:0; }
-.main { margin-left:240px; padding:30px; }
+body { 
+        font-family:Poppins; 
+        background:#0b1120; 
+        color:white; 
+        margin:0; 
+        padding-left: 15px;
+    }
+.main { 
+        margin-left:240px; 
+        padding:30px; 
+    }
 
 table {
     width:100%;
@@ -43,6 +52,35 @@ tr:hover { background:#1a2438; }
     text-decoration: none;
 }
 
+.search-box {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    width: 250px;
+}
+
+.search-box button {
+    background: #22c55e;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.search-box a {
+    background: #ef4444;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+
 </style>
 </head>
 
@@ -53,6 +91,12 @@ tr:hover { background:#1a2438; }
 <div class="main">
 
 <h2>🏢 Counters List</h2>
+
+<form method="GET" action="/counters" class="search-box">
+    <input type="text" name="search" placeholder="Search Counter..." value="<%= search %>">
+    <button type="submit">🔍</button>
+    <a href="/counters">Reset</a>
+</form>
 
 <table>
 <tr>
