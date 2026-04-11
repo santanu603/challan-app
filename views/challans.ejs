@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+            padding-left: 15px;
+        
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .actions a {
+            padding: 10px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            margin-left: 8px;
+            font-size: 14px;
+        }
+
+        .green { background: #22c55e; }
+        .green:hover { background: #16a34a; }
+        .blue { background: #3b82f6; }
+        .blue:hover { background: #2563eb; }
+        .orange { background: #f59e0b; }
+        .orange:hover { background: #d97706; }
+        .export { background: #14b8a6; }
+        .export:hover { background: #0d9488; }
+
+        .card {
+            background: #111827;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: center;
+        }
+
+       
+
+        th {
+            background: #1f2937;
+        }
+
+        tr:hover {
+            background: #1a2438;
+        }
+
+        /* Buttons */
+        .view, .edit, .delete {
+            padding: 6px 10px;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .view { background: #3b82f6; }
+        .view:hover { background: #2563eb; }
+
+        .edit { background: #f59e0b; }
+        .edit:hover { background: #d97706; }
+
+        .delete { background: #ef4444; }
+        .delete:hover { background: #dc2626; }
+
+        .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-box input {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background-color: #1f2937;
+    color:#0f9954;
+    font-weight: bold;
+}
+
+.search-box button {
+    background: #22c55e;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.search-box a {
+    background: #ef4444;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<%- include("partials/sidebar") %>
+
+<div class="main">
+
+    <h1>📊 Dashboard</h1>
+    <form method="GET" action="/challans">
+    <!-- search fields here -->
+     <div class="search-box">
+
+    <input type="text" name="search" placeholder="Search Challan No" value="<%= typeof search !== 'undefined' ? search : '' %>">
+
+    <input type="text" name="counter" placeholder="Search Counter" value="<%= typeof counter !== 'undefined' ? counter : '' %>">
+
+    <input type="date" name="date" value="<%= typeof date !== 'undefined' ? date : '' %>">
+
+    <button type="submit">🔍 Search</button>
+    <a href="/challans">Reset</a>
+
+</div>
+    </form>
+    <div class="top-bar">
+        <div>Total Challans: <strong><%= challans.length %></strong></div>
+
+        <div class="actions">
+            <a href="/new" class="green">+ Challan</a>
+            <a href="/add-item" class="blue">+ Item</a>
+            <a href="/add-counter" class="orange">+ Counter</a>
+            <a href="/export" class="export">⬇ Export</a>
+        </div>
+    </div>
+
+    <div class="card">
+
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Counter</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+
+            <% if (challans.length === 0) { %>
+                <tr>
+                    <td colspan="5">No challans available</td>
+                </tr>
+            <% } %>
+
+            <% challans.forEach(c => { %>
+            <tr>
+                <td><%= c.challanNumber %></td>
+                <td><%= c.counterName %></td>
+                <td>₹ <%= c.totalAmount %></td>
+                <td><%= new Date(c.date).toLocaleDateString() %></td>
+                <td>
+                    <a href="/challan/<%= c._id %>" class="view" target="_blank">View</a>
+                    <a href="/edit/<%= c._id %>" class="edit">Edit</a>
+                    <a href="/delete/<%= c._id %>" class="delete"
+                       onclick="return confirm('Delete this challan?')">Delete</a>
+                </td>
+            </tr>
+            <% }) %>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

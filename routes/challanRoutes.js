@@ -341,4 +341,36 @@ router.get("/item/delete/:id", async (req, res) => {
     res.redirect("/items");
 });
 
+// 📄 View All Challans Page
+router.get("/challans", async (req, res) => {
+    try {
+        const { search, counter, date } = req.query;
+
+        let query = {};
+
+        if (search) {
+            query.challanNumber = { $regex: search, $options: "i" };
+        }
+
+        if (counter) {
+            query.counterName = { $regex: counter, $options: "i" };
+        }
+
+        if (date) {
+            const start = new Date(date);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
+            query.date = { $gte: start, $lte: end };
+        }
+
+        const challans = await Challan.find(query).sort({ date: -1 });
+
+        res.render("challans", { challans, search, counter, date });
+
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading challans");
+    }
+});
+
 module.exports = router;
