@@ -1,0 +1,1 @@
+"C:\Program Files\MongoDB\Tools\100\bin\mongodump.exe" --out="D:\Mongo_backup"

@@ -109,11 +109,23 @@ router.get("/add-item", (req, res) => {
 });
 
 router.post("/add-item", async (req, res) => {
-    const { name, price } = req.body;
+    try {
+        const { name, price } = req.body;
 
-    await Item.create({ name, price });
+        const exists = await Item.findOne({ name: name.trim() });
 
-    res.redirect("/");
+        if (exists) {
+            return res.send("⚠️ Item already exists");
+        }
+
+        await Item.create({ name, price });
+
+        res.redirect("/items");
+
+    } catch (err) {
+        console.error(err);
+        res.send("Error adding item");
+    }
 });
 
 
@@ -123,11 +135,23 @@ router.get("/add-counter", (req, res) => {
 });
 
 router.post("/add-counter", async (req, res) => {
-    const { name, address, phone } = req.body;
+    try {
+        const { name, address, phone } = req.body;
 
-    await Counter.create({ name, address, phone });
+        const exists = await Counter.findOne({ name: name.trim() });
 
-    res.redirect("/");
+        if (exists) {
+            return res.send("⚠️ Counter already exists");
+        }
+
+        await Counter.create({ name, address, phone });
+
+        res.redirect("/counters");
+
+    } catch (err) {
+        console.error(err);
+        res.send("Error adding counter");
+    }
 });
 
 
@@ -372,5 +396,8 @@ router.get("/challans", async (req, res) => {
         res.send("Error loading challans");
     }
 });
+
+
+
 
 module.exports = router;
