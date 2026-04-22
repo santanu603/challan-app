@@ -107,7 +107,7 @@ button {
 
 <% challan.items.forEach(item => { %>
 <div class="item-row">
-
+    
     <input type="text" class="itemSearch" value="<%= item.name %>" oninput="searchItem(this)"required="true">
     <input type="hidden" name="itemName[]" class="itemName" value="<%= item.name %>"required="true">
 
