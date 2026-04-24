@@ -1,18 +1,79 @@
-<div class="receipt">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Challan</title>
 
-    <div class="copy-label">ORIGINAL RECEIPT</div>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
 
-    <!-- 🔽 YOUR EXISTING CHALLAN CONTENT HERE -->
-    <%- include("partials/challanBody") %>
+        .page {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .receipt {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .label {
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .print-btn {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #22c55e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .receipt {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<button onclick="window.print()" class="print-btn">🖨 Print</button>
+
+<div class="page">
+
+    <!-- ORIGINAL -->
+    <div class="receipt">
+        <div class="label">ORIGINAL RECEIPT</div>
+        <%- include("partials/challanBody", { challan, company }) %>
+    </div>
+
+    <!-- DUPLICATE -->
+    <div class="receipt">
+        <div class="label">DUPLICATE RECEIPT</div>
+        <%- include("partials/challanBody", { challan, company }) %>
+    </div>
 
 </div>
 
-
-<div class="receipt">
-
-    <div class="copy-label">DUPLICATE RECEIPT</div>
-
-    <!-- 🔽 SAME CONTENT AGAIN -->
-    <%- include("partials/challanBody") %>
-
-</div>
+</body>
+</html>

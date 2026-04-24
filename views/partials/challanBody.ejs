@@ -1,282 +1,156 @@
-<!DOCTYPE html>
-<html>
-    
-<head>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-<title>Challan</title>
-
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    padding: 20px;
-    background-color: #f9fafb;
-    font-size: 14px;
+    font-size: 12px;
 }
 
-/* 🔷 Container */
-.container {
-    background: #fff;
-    padding: 25px;
-    border: 1px solid #ddd;
-    max-width: 900px;
-    margin: auto;
-}
-
-/* 🔷 Header */
 .header {
     text-align: center;
-    border-bottom: 3px solid #111;
-    padding-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .logo {
-    width: 70px;
+    height: 50px;
 }
 
-.header h2 {
-    margin: 5px 0;
-}
-
-.header p {
-    margin: 2px 0;
-    font-size: 13px;
-    color: #000000;
-}
-
-/* 🔷 Top Info Section */
-.top-section {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.box {
-    width: 48%;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.box h4 {
-    margin: 0 0 8px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-    font-size: 14px;
-}
-
-.box p {
-    margin: 4px 0;
-}
-
-/* 🔷 Table */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th {
-    background: #111;
-    color: #fff;
-    padding: 10px;
-    font-size: 13px;
-}
-
-td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-td:nth-child(2) {
-    text-align: left;
-}
-
-/* 🔷 Total Section */
-.total-section {
-    margin-top: 15px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.total-box {
-    width: 300px;
-    border: 1px solid #ccc;
-}
-
-.total-box td {
-    padding: 10px;
-}
-
-.total-box tr:last-child {
-    background: #111;
-    color: #fff;
+.company-name {
+    font-size: 16px;
     font-weight: bold;
 }
 
-/* 🔷 Remarks */
-.remarks {
-    margin-top: 15px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
+.company-details {
+    font-size: 11px;
 }
 
-/* 🔷 Signature */
-.signature {
-    margin-top: 50px;
+.info {
     display: flex;
     justify-content: space-between;
+    margin-top: 6px;
+    font-size: 12px;
 }
 
-.sign-box {
+.section {
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 4px;
     text-align: center;
-    width: 40%;
 }
 
-.sign-box p {
-    margin: 5px 0;
-}
-
-/* 🔷 Print Button */
-.print-btn {
+.total {
     text-align: right;
-    margin-bottom: 10px;
+    margin-top: 4px;
+    font-weight: bold;
+    font-size: 12px;
 }
 
-.print-btn button {
-    background: #111;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    cursor: pointer;
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 12px;
 }
 
-.print-btn button:hover {
-    background: #333;
-}
-
-/* 🔷 Print */
-@media print {
-    /* Existing rules... */
-    .print-btn {
-        display: none;
-    }
-
-    body {
-        padding: 10px;
-        /* 💡 ADD THESE TWO LINES */
-        -webkit-print-color-adjust: exact; 
-        print-color-adjust: exact;
-    }
-    .receipt {
-        page-break-after: always;
-    }
-
-    .receipt:last-child {
-        page-break-after: auto;
-    }
+.sign {
+    text-align: center;
+    width: 180px;
 }
 </style>
 
-</head>
-
 <body>
+    
 
-<div class="print-btn">
-    <button onclick="window.print()">🖨 Print</button>
-</div>
-
-<div class="container">
-
-    <!-- 🔷 HEADER -->
-    <div class="header">
+<!-- HEADER -->
+<div class="header">
+    <% if (company.logo) { %>
         <img src="<%= company.logo %>" class="logo">
-        <h2><%= company.name %></h2>
-        <p><%= company.address %></p>
-        <p>📞 <%= company.phone %> | 📧 <%= company.email %></p>
-    </div>
-
-    <!-- 🔷 TOP INFO -->
-    <div class="top-section">
-
-        <div class="box">
-            <h4>Challan Details</h4>
-            <p><strong>No:</strong> <%= challan.challanNumber %></p>
-            <p><strong>Date:</strong> <%= new Date(challan.date).toLocaleDateString('en-GB') %></p>
-
-            <svg id="barcode"></svg>
-        </div>
-
-        <div class="box">
-            <h4>Challan To</h4>
-            <p><strong><%= challan.counterName %></strong></p>
-            <p><%= challan.counterAddress %></p>
-            <p><strong>Phone:</strong> <%= challan.counterPhone %></p>
-        </div>
-
-    </div>
-
-    <!-- 🔷 TABLE -->
-    <table>
-        <tr>
-            <th>Sl No</th>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Total</th>
-        </tr>
-
-        <% challan.items.forEach((i, index) => { %>
-        <tr>
-            <td><%= index + 1 %></td>
-            <td><%= i.name %></td>
-            <td><%= i.quantity %></td>
-            <td>₹ <%= i.price %></td>
-            <td>₹ <%= i.quantity * i.price %></td>
-        </tr>
-        <% }) %>
-    </table>
-
-    <!-- 🔷 TOTAL -->
-    <div class="total-section">
-        <table class="total-box">
-            <tr>
-                <td>Total Qty</td>
-                <td><%= challan.items.reduce((sum, i) => sum + i.quantity, 0) %></td>
-            </tr>
-            <tr>
-                <td>Total Amount</td>
-                <td>₹ <%= challan.totalAmount %></td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- 🔷 REMARKS -->
-    <% if (challan.remarks) { %>
-    <div class="remarks">
-        <strong>Remarks:</strong>
-        <p><%= challan.remarks %></p>
-    </div>
     <% } %>
 
-    <!-- 🔷 SIGNATURE -->
-    <div class="signature">
+    <div class="company-name"><%= company.name %></div>
+    <div class="company-details">
+        <%= company.address %><br>
+        📞 <%= company.phone %> | ✉ <%= company.email %>
+    </div>
+</div>
 
-        <div class="sign-box">
-            <p>______________________</p>
-            <p><strong>Receiver Signature</strong></p>
-        </div>
+<hr>
 
-        <div class="sign-box">
-            <p>______________________</p>
-            <p><strong>Authorized Signatory</strong></p>
-            <p>FOR NEMESYS INFOTECH PVT. LTD.</p>
-        </div>
-
+<!-- INFO -->
+<div class="info">
+    <div>
+        <b>Challan No:</b> <%= challan.challanNumber %><br>
+        <b>Date:</b> <%= new Date(challan.date).toLocaleDateString() %>
+        <svg id="barcode"></svg>
     </div>
 
+    <div>
+        Counter: <b><%= challan.counterName %></b><br>
+        Address: <%= challan.counterAddress || "N/A" %><br>
+        Phone: <b><%= challan.counterPhone || "N/A" %></b>
+    </div>
+</div>
+
+<!-- TABLE -->
+<table>
+<tr>
+    <th>Sl No</th>
+    <th>Item</th>
+    <th>Qty</th>
+    <th>Price</th>
+    <th>Total</th>
+</tr>
+
+<%
+let totalQty = 0;
+challan.items.forEach((item, index) => {
+    totalQty += item.quantity;
+%>
+
+<tr>
+    <td><%= index + 1 %></td>
+    <td><%= item.name %></td>
+    <td><%= item.quantity %></td>
+    <td>₹ <%= item.price %></td>
+    <td>₹ <%= item.quantity * item.price %></td>
+</tr>
+
+<% }) %>
+
+</table>
+
+<div class="total">
+    Total Qty: <%= totalQty %> |
+    Total Amount: ₹ <%= challan.totalAmount %>
+</div>
+
+<!-- REMARKS -->
+<% if (challan.remarks) { %>
+<div class="section">
+    <b>Remarks:</b> <%= challan.remarks %>
+</div>
+<% } %>
+
+<!-- SIGNATURE -->
+<div class="footer">
+    <div class="sign">
+        ___________________<br>
+        Receiver Signature
+    </div>
+
+    <div class="sign">
+        ___________________<br>
+        Authorized Signatory
+    </div>
 </div>
 
 <script>
@@ -291,6 +165,3 @@ td:nth-child(2) {
     };
     
 </script>
-
-</body>
-</html>
