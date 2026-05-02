@@ -81,7 +81,7 @@ router.post("/create", async (req, res) => {
             total += qty * price;
         }
 
-        await Challan.create({
+        const newChallan = await Challan.create({
             challanNumber: "CH" + Date.now(),
 
             // ✅ FIX HERE
@@ -94,7 +94,7 @@ router.post("/create", async (req, res) => {
             remarks
         });
 
-        res.redirect("/");
+        res.redirect("/challan/" + newChallan._id);
 
     } catch (err) {
         console.error(err);
@@ -397,6 +397,39 @@ router.get("/challans", async (req, res) => {
     }
 });
 
+// EXPORT ITEMS
+router.get("/export-items", async (req, res) => {
+
+    const items = await Item.find();
+
+    let csv = "Item Name,Price\n";
+
+    items.forEach(i => {
+        csv += `${i.name},${i.price}\n`;
+    });
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("items.csv");
+
+    return res.send(csv);
+});
+
+// EXPORT COUNTERS
+router.get("/export-counters", async (req, res) => {
+
+    const counters = await Counter.find();
+
+    let csv = "Counter Name,Address,Phone\n";
+
+    counters.forEach(c => {
+        csv += `${c.name},${c.address},${c.phone}\n`;
+    });
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("counters.csv");
+
+    return res.send(csv);
+});
 
 
 

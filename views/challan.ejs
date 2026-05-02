@@ -44,6 +44,10 @@
                 display: none;
             }
 
+            .back-btn {
+                display: none;
+            }
+
             body {
                 background: white;
             }
@@ -52,12 +56,57 @@
                 page-break-inside: avoid;
             }
         }
+
+        .top-actions{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+}
+
+.back-btn{
+    background:#3b82f6;
+    color:white;
+    padding:10px 15px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:14px;
+}
+
+.back-btn:hover{
+    background:#2563eb;
+}
+
+
+.print-btn{
+    padding:10px 15px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.print-btn:hover{
+    background:#16a34a;
+}
     </style>
 </head>
 
 <body>
 
-<button onclick="window.print()" class="print-btn">🖨 Print</button>
+<div class="top-actions">
+
+    <a href="/" class="back-btn">
+        ⬅ Dashboard
+    </a>
+    
+
+    <button onclick="window.print()" class="print-btn">
+        🖨 Print
+    </button>
+
+</div>
 
 <div class="page">
 
